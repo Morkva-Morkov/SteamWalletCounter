@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Steam Wallet Counter</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <script type="module" src="dashboard.mjs"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-icon">W</span><span>STEAM WALLET<br><strong>COUNTER <span class="version">2</span></strong></span></a>
+      <p class="sidebar-caption">ТВОИ РАСХОДЫ</p>
+      <button id="overview" class="nav-item active" type="button"><span class="nav-symbol">◈</span><span>Все расходы</span></button>
+      <div class="sidebar-heading"><span>ПО ИГРАМ</span><span id="game-count">0</span></div>
+      <div id="game-list" class="game-list" aria-label="Игры"></div>
+      <div class="sidebar-bottom"><span class="local-dot"></span> Данные на этом устройстве<br><button id="help-button" class="text-button" type="button">Как пользоваться</button></div>
+    </aside>
+    <main>
+      <header class="topbar"><div><p class="eyebrow">STEAM WALLET COUNTER</p><h1 id="page-title">История твоих трат</h1></div><div class="top-actions"><button id="demo-button" type="button" class="button subtle">Пример</button><button id="load-button" type="button" class="button primary">Загрузить историю</button><button id="stop-button" type="button" class="button subtle" hidden>Остановить</button></div></header>
+      <section id="welcome" class="welcome" hidden><div><h2>Куда ушли деньги в Steam?</h2><p>Игры, предметы, пополнения и продажи — в одной истории. Открой Steam в этом браузере и загрузи операции.</p></div><button id="welcome-demo" class="button subtle" type="button">Посмотреть пример →</button></section>
+      <section class="status-box" aria-live="polite"><div class="status-main"><span id="status-dot" class="status-dot"></span><p id="status-text">История ещё не загружена.</p></div><div class="status-extra"><select id="account-select" aria-label="Сохранённый аккаунт"><option value="">Нет сохранённых аккаунтов</option></select><span id="updated-text"></span></div><div id="progress-track" class="progress-track" hidden><div id="progress-fill"></div></div></section>
+      <section id="access-panel" class="access-panel"><span id="access-text">Проверяю доступ к Steam…</span><div class="access-actions"><button id="grant-access" type="button" class="button subtle" hidden>Разрешить доступ к Steam</button><a href="https://store.steampowered.com/account/history/?l=english" target="_blank" rel="noopener">Открыть историю покупок ↗</a><a href="https://steamcommunity.com/market/?l=english" target="_blank" rel="noopener">Открыть площадку ↗</a></div></section>
+      <div id="notice" class="notice" hidden></div>
+      <section class="summary" aria-label="Сводка">
+        <article class="hero-card"><div><p id="hero-label">Всего потрачено</p><div id="spent-total" class="hero-value">—</div><p class="card-hint">Магазин + покупки в играх + торговая площадка</p></div><div class="hero-bottom"><span>С учётом возвратов</span><strong id="net-total">—</strong></div></article>
+        <article class="metric-card"><p>Покупки в Steam</p><strong id="store-total" class="expense">—</strong><span>Игры, DLC, подписки, покупки в играх</span></article>
+        <article class="metric-card"><p>Траты на площадке</p><strong id="market-total" class="expense">—</strong><span>Покупки предметов с учётом уплаченной цены</span></article>
+        <article class="metric-card"><p>Поступления с площадки</p><strong id="sales-total" class="income">—</strong><span>Проданные предметы</span></article>
+        <article class="metric-card"><p>Прямые пополнения</p><strong id="topup-total" class="income">—</strong><span>Показанные Steam зачисления в кошелёк</span></article>
+        <article class="metric-card"><p>Возвраты покупок</p><strong id="refund-total" class="income">—</strong><span>Уменьшают расходы после возвратов</span></article>
+        <article class="metric-card"><p>Прочие поступления</p><strong id="other-income-total" class="income">—</strong><span>Другие зачисления, кроме возвратов</span></article>
+      </section>
+      <div class="additional"><span>Всего получено <strong id="received-total">—</strong></span><span>Прочие траты <strong id="other-spent-total">—</strong></span><span>Возвраты пополнений <strong id="topup-refund-total">—</strong></span></div>
+      <section id="game-summary" class="game-summary" hidden></section>
+      <section class="transactions-panel">
+        <div class="section-top"><div><p class="eyebrow">ДЕТАЛИЗАЦИЯ</p><h2 id="detail-title">Все покупки</h2></div><div class="segmented" role="group" aria-label="Вид списка"><button id="items-view" class="selected" type="button">По предметам</button><button id="history-view" type="button">Последние покупки</button></div></div>
+        <div class="filters"><label class="search"><span>⌕</span><input id="search" placeholder="Найти игру или предмет…" type="search" aria-label="Поиск игры или предмета"></label><select id="source-filter" aria-label="Источник"><option value="all">Все источники</option><option value="wallet">Магазин / в игре</option><option value="market">Торговая площадка</option></select><select id="kind-filter" aria-label="Тип операций"><option value="spend">Только покупки</option><option value="all">Все операции</option><option value="refund">Возвраты</option><option value="sales">Продажи</option><option value="funding">Пополнения и зачисления</option></select><button id="date-button" type="button" class="button subtle">Период</button></div>
+        <div id="date-filters" class="date-filters" hidden><label>С <input id="date-from" type="date"></label><label>По <input id="date-to" type="date"></label><button id="date-clear" type="button" class="text-button">Сбросить</button><span>Сводка также учитывает выбранный период.</span></div>
+        <div class="table-wrap"><table><thead id="table-head"></thead><tbody id="table-body"></tbody></table><div id="empty-state" class="empty-state" hidden><div>◈</div><h3>Здесь пока пусто</h3><p id="empty-text">Загрузи историю или открой пример.</p></div></div>
+        <footer class="table-footer"><span id="row-count">0 записей</span><div class="paging"><button id="prev-page" aria-label="Предыдущая страница" type="button">←</button><span id="page-number">1 / 1</span><button id="next-page" aria-label="Следующая страница" type="button">→</button></div></footer>
+      </section>
+      <footer class="bottom-bar"><div><button id="csv-button" class="text-button" type="button">↓ Экспорт CSV</button><button id="backup-button" class="text-button" type="button">↓ Резервная копия</button><button id="import-button" class="text-button" type="button">↑ Импорт HTML / JSON</button><input id="file-input" type="file" accept=".json,.html,.htm" hidden></div><div><label class="currency-label">Валюта для символов $ / ¥ <select id="fallback-currency"><option value="">Авто</option><option>RUB</option><option>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>CNY</option><option>JPY</option><option>KZT</option><option>UAH</option><option>INR</option></select></label><button id="restart-button" class="text-button" type="button">Загрузить заново</button></div></footer>
+      <details id="diagnostics"><summary id="diagnostics-title">Сведения о загрузке</summary><div id="diagnostics-content"></div></details>
+    </main>
+  </div>
+  <dialog id="help-dialog"><button class="close-dialog" aria-label="Закрыть" type="button">×</button><p class="eyebrow">НАЧАЛО РАБОТЫ</p><h2>Одна загрузка. Вся история.</h2><ol><li>Войди в свой аккаунт на <a href="https://store.steampowered.com/account/history/" target="_blank" rel="noopener">странице истории покупок</a> и на <a href="https://steamcommunity.com/market/" target="_blank" rel="noopener">торговой площадке Steam</a>.</li><li>Нажми «Загрузить историю» и оставь эту вкладку открытой. Большая история загружается постепенно.</li><li>Выбери игру слева. «По предметам» объединяет одинаковые покупки, «Последние покупки» показывает операции по датам.</li></ol><p>Загрузку можно остановить и продолжить. После завершения кнопка «Обновить историю» перечитает данные. «Загрузить заново» также пересчитывает историю с первой страницы.</p><p>Пополнения не считаются расходами. Подробные операции площадки заменяют её записи в истории кошелька. Валюты не смешиваются.</p><p>Если Steam не указал отдельную цену каждого предмета в наборе, отображается общая цена набора. Названия без детализации можно уточнить вручную, сумма останется исходной.</p><p>CSV выгружает выбранные операции. JSON сохраняет всю историю и ручные уточнения. HTML импортируется как отдельный локальный набор с пометкой неполной истории.</p><p>Расширение обращается только к Steam; история хранится в браузере.</p></dialog>
+  <dialog id="edit-dialog"><form id="edit-form"><button class="close-dialog" type="button" aria-label="Закрыть">×</button><p class="eyebrow">УТОЧНЕНИЕ ПОКУПКИ</p><h2>Название и количество</h2><p>Сумма операции Steam остаётся прежней.</p><label>Игра<input name="game" required maxlength="1000"></label><label>Название предмета / набора<input name="name" required maxlength="10000"></label><label>Количество<input name="quantity" type="number" min="1" max="100000000" step="1" required></label><div class="dialog-actions"><button id="reset-edit" type="button" class="button subtle">Вернуть исходное</button><button type="submit" class="button primary">Сохранить</button></div></form></dialog>
+</body>
+</html>
